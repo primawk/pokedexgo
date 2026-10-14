@@ -1,29 +1,21 @@
 package repl
 
 import (
-    "fmt"
-    "os"
+	"fmt"
+	"os"
 	"strings"
 )
 
-
-var Commands map[string]cliCommand
-
-func init() {
-    Commands = map[string]cliCommand{
-        "exit": {
-            Name:        "exit",
-            Description: "Exit the Pokedex",
-            Callback:    commandExit,
-        },
-        "help": {
-            Name:        "help",
-            Description: "Displays a help message",
-            Callback:    commandHelp,
-        },
-    }
+type CliCommand struct {
+	Name        string
+	Description string
+	Callback    func(c *Config) error
 }
 
+type Config struct {
+	Commands map[string]CliCommand
+	// You can add other state fields here later (e.g., NextURL string)
+}
 
 func CleanInput(text string) []string {
 	words := strings.Fields(text)
@@ -35,27 +27,20 @@ func CleanInput(text string) []string {
 	return words
 }
 
-
-type cliCommand struct {
-    Name        string
-    Description string
-    Callback    func() error
-}
-
-func commandExit() error {
+func CommandExit(c *Config) error {
 	fmt.Print("Closing the Pokedex... Goodbye!\n")
 	os.Exit(0)
-    return nil
+	return nil
 }
 
-func commandHelp() error {  
+func CommandHelp(c *Config) error {
 	msg := "Welcome to the Pokedex!\nUsage:\n\n"
 
-	for name, cmd := range Commands {
-        msg += fmt.Sprintf("%s: %s\n", name, cmd.Description)
-    }
+	// Access the commands map stored inside the Config instance
+	for name, cmd := range c.Commands {
+		msg += fmt.Sprintf("%s: %s\n", name, cmd.Description)
+	}
 
 	fmt.Print(msg)
 	return nil
 }
-
