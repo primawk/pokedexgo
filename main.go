@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/primawk/pokedexgo/repl"
+	"github.com/primawk/pokedexgo/internal"
 	"os"
 )
 
@@ -20,6 +21,16 @@ func main() {
 				Name:        "help",
 				Description: "Displays a help message",
 				Callback:    repl.CommandHelp,
+			},
+			"map": {
+				Name:        "map",
+				Description: "Displays the names of 20 location areas in the Pokemon world",
+				Callback:    internal.CommandMap,
+			},
+			"mapb": {
+				Name:        "mapb",
+				Description: "Displays the names of previous 20 location areas in the Pokemon world",
+				Callback:    internal.CommandMapB,
 			},
 		},
 	}

@@ -14,7 +14,18 @@ type CliCommand struct {
 
 type Config struct {
 	Commands map[string]CliCommand
-	// You can add other state fields here later (e.g., NextURL string)
+	Next     string
+	Previous string
+}
+
+type LocationArea struct {
+	Count    int    `json:"count"`
+	Next     string `json:"next"`
+	Previous string `json:"previous"`
+	Results  []struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"results"`
 }
 
 func CleanInput(text string) []string {
