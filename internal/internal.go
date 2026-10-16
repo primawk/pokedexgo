@@ -3,16 +3,33 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/primawk/pokedexgo/repl"
 	"io"
 	"net/http"
-	"github.com/primawk/pokedexgo/repl"
 )
 
 func CommandMap(c *repl.Config) error {
 	resource := repl.LocationArea{}
+
 	url := c.Next
+
 	if url == "" {
-		url = "https://pokeapi.co/api/v2/location-area"
+		url = "https://pokeapi.co/api/v2/location-area?offset=0&limit=20"
+	}
+
+	if value, ok := c.Cache.Get(url); ok {
+		if err := json.Unmarshal(value, &resource); err != nil {
+			return fmt.Errorf("Error unmarshalling JSON: %v", err)
+		}
+
+		for _, loc := range resource.Results {
+			fmt.Printf("%s\n", loc.Name)
+		}
+
+		c.Next = resource.Next
+		c.Previous = resource.Previous
+
+		return nil
 	}
 
 	res, err := http.Get(url)
@@ -32,6 +49,8 @@ func CommandMap(c *repl.Config) error {
 		return err
 	}
 
+	c.Cache.Add(url, body)
+
 	if err := json.Unmarshal(body, &resource); err != nil {
 		return fmt.Errorf("Error unmarshalling JSON: %v", err)
 	}
@@ -48,9 +67,26 @@ func CommandMap(c *repl.Config) error {
 
 func CommandMapB(c *repl.Config) error {
 	resource := repl.LocationArea{}
+
 	url := c.Previous
+
 	if url == "" {
 		return fmt.Errorf("You are on the first page")
+	}
+
+	if value, ok := c.Cache.Get(url); ok {
+		if err := json.Unmarshal(value, &resource); err != nil {
+			return fmt.Errorf("Error unmarshalling JSON: %v", err)
+		}
+
+		for _, loc := range resource.Results {
+			fmt.Printf("%s\n", loc.Name)
+		}
+
+		c.Next = resource.Next
+		c.Previous = resource.Previous
+
+		return nil
 	}
 
 	res, err := http.Get(url)

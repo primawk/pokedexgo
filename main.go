@@ -3,13 +3,17 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/primawk/pokedexgo/repl"
 	"github.com/primawk/pokedexgo/internal"
+	"github.com/primawk/pokedexgo/internal/pokecache"
+	"github.com/primawk/pokedexgo/repl"
 	"os"
+	"time"
 )
 
 func main() {
-	// Initialize the config and embed the command map inside it
+	cacheInterval := 5 * time.Minute
+	myCache := pokecache.NewCache(cacheInterval)
+
 	cfg := &repl.Config{
 		Commands: map[string]repl.CliCommand{
 			"exit": {
@@ -33,6 +37,7 @@ func main() {
 				Callback:    internal.CommandMapB,
 			},
 		},
+		Cache: myCache,
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)

@@ -2,6 +2,7 @@ package repl
 
 import (
 	"fmt"
+	"github.com/primawk/pokedexgo/internal/pokecache"
 	"os"
 	"strings"
 )
@@ -16,6 +17,7 @@ type Config struct {
 	Commands map[string]CliCommand
 	Next     string
 	Previous string
+	Cache    *pokecache.Cache
 }
 
 type LocationArea struct {
