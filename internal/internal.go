@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func CommandMap(c *repl.Config) error {
+func CommandMap(c *repl.Config, _ string) error {
 	resource := repl.LocationArea{}
 
 	url := c.Next
@@ -65,7 +65,7 @@ func CommandMap(c *repl.Config) error {
 	return nil
 }
 
-func CommandMapB(c *repl.Config) error {
+func CommandMapB(c *repl.Config, _ string) error {
 	resource := repl.LocationArea{}
 
 	url := c.Previous
@@ -115,6 +115,56 @@ func CommandMapB(c *repl.Config) error {
 
 	for _, loc := range resource.Results {
 		fmt.Printf("%s\n", loc.Name)
+	}
+
+	return nil
+}
+
+func CommandExplore(c *repl.Config, name string) error {
+	resource := repl.LocationAreasResource{}
+
+	url := "https://pokeapi.co/api/v2/location-area/" + name
+
+	fmt.Printf("exploring %s...\n", name)
+
+	if value, ok := c.Cache.Get(url); ok {
+		fmt.Println("retrieve from cached data")
+		if err := json.Unmarshal(value, &resource); err != nil {
+			return fmt.Errorf("Error unmarshalling JSON: %v", err)
+		}
+
+		for _, pokemon := range resource.PokemonEncounters {
+			fmt.Printf("%s\n", pokemon.Pokemon.Name)
+		}
+
+		return nil
+	}
+
+	res, err := http.Get(url)
+
+	if err != nil {
+		return err
+	}
+
+	body, err := io.ReadAll(res.Body)
+	res.Body.Close()
+
+	if res.StatusCode > 299 {
+		return fmt.Errorf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	c.Cache.Add(url, body)
+
+	if err := json.Unmarshal(body, &resource); err != nil {
+		return fmt.Errorf("Error unmarshalling JSON: %v", err)
+	}
+
+	for _, pokemon := range resource.PokemonEncounters {
+		fmt.Printf("%s\n", pokemon.Pokemon.Name)
 	}
 
 	return nil

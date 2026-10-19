@@ -36,6 +36,11 @@ func main() {
 				Description: "Displays the names of previous 20 location areas in the Pokemon world",
 				Callback:    internal.CommandMapB,
 			},
+			"explore": {
+				Name:        "explore",
+				Description: "Display the names of all Pokémon found in the area",
+				Callback:    internal.CommandExplore,
+			},
 		},
 		Cache: myCache,
 	}
@@ -57,9 +62,20 @@ func main() {
 		// Look up the command from cfg.Commands
 		if cmd, exists := cfg.Commands[commandName]; exists {
 			// Pass the config pointer into the callback
-			err := cmd.Callback(cfg)
-			if err != nil {
-				fmt.Println(err)
+			if commandName == "explore" {
+				if len(words) < 2 {
+					fmt.Println("location name is required")
+				} else {
+					err := cmd.Callback(cfg, words[1])
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
+			} else {
+				err := cmd.Callback(cfg, "")
+				if err != nil {
+					fmt.Println(err)
+				}
 			}
 		} else {
 			fmt.Println("Unknown command")
