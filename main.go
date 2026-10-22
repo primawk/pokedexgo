@@ -41,6 +41,11 @@ func main() {
 				Description: "Display the names of all Pokémon found in the area",
 				Callback:    internal.CommandExplore,
 			},
+			"catch": {
+				Name:        "catch",
+				Description: "Catch a pokemon",
+				Callback:    internal.CommandCatch,
+			},
 		},
 		Cache: myCache,
 	}
@@ -65,6 +70,15 @@ func main() {
 			if commandName == "explore" {
 				if len(words) < 2 {
 					fmt.Println("location name is required")
+				} else {
+					err := cmd.Callback(cfg, words[1])
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
+			} else if commandName == "catch" {
+				if len(words) < 2 {
+					fmt.Println("pokemon name is required")
 				} else {
 					err := cmd.Callback(cfg, words[1])
 					if err != nil {
