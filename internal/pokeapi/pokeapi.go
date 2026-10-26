@@ -10,7 +10,7 @@ import (
 )
 
 func CommandMap(c *repl.Config, _ string) error {
-	resource := repl.LocationArea{}
+	resource := LocationArea{}
 
 	url := c.Next
 
@@ -67,7 +67,7 @@ func CommandMap(c *repl.Config, _ string) error {
 }
 
 func CommandMapB(c *repl.Config, _ string) error {
-	resource := repl.LocationArea{}
+	resource := LocationArea{}
 
 	url := c.Previous
 
@@ -122,7 +122,7 @@ func CommandMapB(c *repl.Config, _ string) error {
 }
 
 func CommandExplore(c *repl.Config, name string) error {
-	resource := repl.LocationAreasResource{}
+	resource := LocationAreasResource{}
 
 	url := "https://pokeapi.co/api/v2/location-area/" + name
 
@@ -174,7 +174,7 @@ func CommandExplore(c *repl.Config, name string) error {
 }
 
 func CommandCatch(c *repl.Config, name string) error {
-	resource := PokemonDetails{}
+	resource := repl.PokemonDetails{}
 	fmt.Printf("Throwing a Pokeball at %s...\n", name)
 
 	url := "https://pokeapi.co/api/v2/pokemon/" + name
@@ -205,7 +205,7 @@ func CommandCatch(c *repl.Config, name string) error {
 	if point > resource.BaseExperience/2 {
 		fmt.Printf("%s was caught!\n", name)
 		c.Pokedex[name] = repl.Pokemon{
-			Name: name,
+			Data: resource,
 		}
 	} else {
 		fmt.Printf("%s escaped!\n", name)
