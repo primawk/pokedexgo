@@ -47,7 +47,8 @@ func main() {
 				Callback:    internal.CommandCatch,
 			},
 		},
-		Cache: myCache,
+		Pokedex: map[string]repl.Pokemon{},
+		Cache:   myCache,
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
