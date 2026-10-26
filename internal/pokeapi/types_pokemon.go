@@ -1,4 +1,4 @@
-package internal
+package pokeapi
 
 type PokemonDetails struct {
 	ID             int    `json:"id"`

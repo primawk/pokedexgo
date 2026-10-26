@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/primawk/pokedexgo/internal"
+	"github.com/primawk/pokedexgo/internal/pokeapi"
 	"github.com/primawk/pokedexgo/internal/pokecache"
 	"github.com/primawk/pokedexgo/repl"
 	"os"
@@ -29,22 +29,22 @@ func main() {
 			"map": {
 				Name:        "map",
 				Description: "Displays the names of 20 location areas in the Pokemon world",
-				Callback:    internal.CommandMap,
+				Callback:    pokeapi.CommandMap,
 			},
 			"mapb": {
 				Name:        "mapb",
 				Description: "Displays the names of previous 20 location areas in the Pokemon world",
-				Callback:    internal.CommandMapB,
+				Callback:    pokeapi.CommandMapB,
 			},
 			"explore": {
 				Name:        "explore",
 				Description: "Display the names of all Pokémon found in the area",
-				Callback:    internal.CommandExplore,
+				Callback:    pokeapi.CommandExplore,
 			},
 			"catch": {
 				Name:        "catch",
 				Description: "Catch a pokemon",
-				Callback:    internal.CommandCatch,
+				Callback:    pokeapi.CommandCatch,
 			},
 		},
 		Pokedex: map[string]repl.Pokemon{},
