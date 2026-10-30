@@ -174,6 +174,10 @@ func CommandExplore(c *repl.Config, name string) error {
 }
 
 func CommandCatch(c *repl.Config, name string) error {
+	if _, exists := c.Pokedex[name]; exists {
+		fmt.Println("You already caught that pokemon")
+		return nil
+	}
 	resource := repl.PokemonDetails{}
 	fmt.Printf("Throwing a Pokeball at %s...\n", name)
 
@@ -204,6 +208,7 @@ func CommandCatch(c *repl.Config, name string) error {
 
 	if point > resource.BaseExperience/2 {
 		fmt.Printf("%s was caught!\n", name)
+		fmt.Println("You may now inspect it with the inspect command.")
 		c.Pokedex[name] = repl.Pokemon{
 			Data: resource,
 		}
@@ -211,5 +216,41 @@ func CommandCatch(c *repl.Config, name string) error {
 		fmt.Printf("%s escaped!\n", name)
 	}
 
+	return nil
+}
+
+func CommandInspect(c *repl.Config, name string) error {
+	if value, exists := c.Pokedex[name]; exists {
+		fmt.Printf("Name: %s\n", value.Data.Name)
+		fmt.Printf("Height: %d\n", value.Data.Height)
+		fmt.Printf("Weight: %d\n", value.Data.Weight)
+		fmt.Println("Stats:")
+
+		for _, stat := range value.Data.Stats {
+			fmt.Printf(" - %s: %d\n", stat.Stat.Name, stat.BaseStat)
+		}
+		fmt.Println("Types:")
+
+		for _, item := range value.Data.Types {
+			fmt.Printf(" - %s\n", item.Type.Name)
+		}
+	} else {
+		fmt.Println("you have not caught that pokemon")
+	}
+
+	return nil
+}
+
+func CommandPokedex(c *repl.Config, _ string) error {
+	if len(c.Pokedex) == 0 {
+		fmt.Println("You don't have any pokemon in your pokedex.")
+		return nil
+	}
+
+	fmt.Println("Your Pokedex:")
+
+	for _, item := range c.Pokedex {
+		fmt.Printf(" - %s\n", item.Data.Name)
+	}
 	return nil
 }

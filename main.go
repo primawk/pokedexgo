@@ -46,6 +46,16 @@ func main() {
 				Description: "Catch a pokemon",
 				Callback:    pokeapi.CommandCatch,
 			},
+			"inspect": {
+				Name:        "inspect",
+				Description: "Inspect your pokemon",
+				Callback:    pokeapi.CommandInspect,
+			},
+			"pokedex": {
+				Name:        "pokedex",
+				Description: "Inspect your pokedex",
+				Callback:    pokeapi.CommandPokedex,
+			},
 		},
 		Pokedex: map[string]repl.Pokemon{},
 		Cache:   myCache,
@@ -78,6 +88,15 @@ func main() {
 					}
 				}
 			} else if commandName == "catch" {
+				if len(words) < 2 {
+					fmt.Println("pokemon name is required")
+				} else {
+					err := cmd.Callback(cfg, words[1])
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
+			} else if commandName == "inspect" {
 				if len(words) < 2 {
 					fmt.Println("pokemon name is required")
 				} else {
